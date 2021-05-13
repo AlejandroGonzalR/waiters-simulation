@@ -45,6 +45,9 @@ class Restaurant(object):
         self.workers = simpy.Resource(env, workers)
 
     def waiter_step(self, worker: str, next_step: str, steps: list) -> None:
+        if self.env.now % self.attributes.times['rest_interval'] == 0:
+            self.env.timeout(self.attributes.times['rest'])
+
         if next_step is not None:
             self.env.process(waiter(self.env, worker, process=self, target=next_step))
 
